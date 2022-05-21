@@ -144,5 +144,47 @@ namespace Dapper01
                 textBox1.Text = text;
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string sql01 = "INSERT alumnos2(nombre) OUTPUT inserted.idalumno VALUES(@nombre)";
+            string sql02 = "INSERT notas(idalumno, nota) VALUES(@idalumno, @nota)";
+
+            using (var cn = new SqlConnection(data_connection))
+            {
+                var id = cn.QuerySingle<int>(sql01, new { nombre = "Alumno de Prueba" });
+
+                for(int i = 0; i < 3; i++)
+                {
+                    cn.Execute(sql02, new { idalumno = id, nota = 20});
+                }
+
+                textBox1.Text = "INSERCION EXITOSA";
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string sql = "DELETE FROM alumnos2 WHERE idalumno = @idalumno";
+
+            using (var cn = new SqlConnection(data_connection))
+            {
+                cn.Execute(sql, new { idalumno = 2002 });
+            }
+
+            textBox1.Text = "RETIRO EXITOSO";
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string sql = "UPDATE notas SET nota = @nota1 WHERE idalumno = @idalumno AND nota = @nota2";
+
+            using (var cn = new SqlConnection(data_connection))
+            {
+                cn.Execute(sql, new { nota1 = 20, idalumno = 1, nota2 = 15 });
+            }
+
+            textBox1.Text = "ACTUALIZACIÓN EXITOSA";
+        }
     }
 }
